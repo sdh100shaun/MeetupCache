@@ -1,0 +1,8 @@
+language: php
+sudo: required
+dist: trusty
+php: '7.0'
+install: composer install  --no-interaction
+env:
+  global:
+    - setup=basic
