@@ -1,8 +1,10 @@
 MeetupProxy
 =========================
+[![Build Status](https://travis-ci.org/sdh100shaun/MeetupProxy.svg?branch=develop)](https://travis-ci.org/sdh100shaun/MeetupProxy)
 
 A meetup service proxy of sorts - enables us to get the reponse from meetup
 from the filesystem if present
+
 Features
 --------
 
@@ -10,4 +12,5 @@ Features
 * Unit-Testing with PHPUnit
 
 author: Shaun Hare
+
 License MIT -see License
