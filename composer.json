@@ -1,0 +1,32 @@
+{
+    "name": "Shaunhare/MeetupProxy",
+    "description": " package for intercepting calls from DMS\\Service\\Meetup and reading\/writing response to filesystem written for phpminds",
+    "keywords": [
+        "meetup",
+        "phpminds"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Shaun Hare",
+            "email": "shaun@shaunhare.co.uk"
+        }
+    ],
+    "type": "project",
+    "require": {
+        "php": ">=7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "ShaunHare\\MeetupProxy\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShaunHare\\Tests\\MeetupProxy\\": "tests/phpunit"
+        }
+    }
+}
