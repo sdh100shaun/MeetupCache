@@ -6,6 +6,8 @@ install:
   - composer install  --no-interaction
   # Install PHPCS
   - composer global require "squizlabs/php_codesniffer *"
+script:
+    - phpcs --standard=$(if [ -e ruleset.xml ]; then echo ruleset.xml; else echo PSR2; fi) $(find . -name '*.php')
 env:
   global:
     - setup=basic
