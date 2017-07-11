@@ -20,6 +20,11 @@ class ServiceProxyTest extends TestCase
     private $mockedClient;
     
     /**
+     * @var
+     */
+    private $serviceProxy;
+    
+    /**
      * Just check if the Class has no syntax error
      *
      * Check to make sure has no syntax error. This helps you troubleshoot
@@ -29,6 +34,7 @@ class ServiceProxyTest extends TestCase
     public function setUp()
     {
         $this->mockedClient = \Mockery::mock('\DMS\Service\Meetup\MeetupKeyAuthClient');
+        $this->serviceProxy = new ServiceProxy($this->mockedClient);
     }
     
     
@@ -38,6 +44,11 @@ class ServiceProxyTest extends TestCase
         $var = new ServiceProxy($this->mockedClient);
         $this->assertTrue(is_object($var));
         unset($var);
+    }
+    
+    public function testConfigStoragePathExists()
+    {
+        $this->assertTrue(true);
     }
     
     

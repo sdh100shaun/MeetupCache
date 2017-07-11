@@ -2,7 +2,10 @@ language: php
 sudo: required
 dist: trusty
 php: '7.0'
-install: composer install  --no-interaction
+install:
+  - composer install  --no-interaction
+  - pyrus install pear/PHP_CodeSniffer
+  - phpenv rehash
 env:
   global:
     - setup=basic
