@@ -34,7 +34,7 @@ class ServiceProxy
         $this->client = $client;
     }
     
-    public function __call($name, $arguments)
-    {
+    public function __call($name, $arguments) {
+        
     }
 }
