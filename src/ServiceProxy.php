@@ -1,5 +1,7 @@
 <?php namespace ShaunHare\MeetupProxy;
 
+use DMS\Service\Meetup\MeetupKeyAuthClient;
+
 /**
 *  A Meetup Service Proxy
 *
@@ -9,7 +11,18 @@
 *  @author Shaun Hare
 */
 class ServiceProxy{
-
+    
+    /**
+     * @var MeetupKeyAuthClient
+     */
+    private $client;
+    
+    public function __construct(MeetupKeyAuthClient $client)
+    {
+    
+        $this->client = $client;
+    }
+    
    /**  @var string storagePath*/
    private $storagePath = '';
  
