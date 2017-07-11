@@ -4,8 +4,8 @@ dist: trusty
 php: '7.0'
 install:
   - composer install  --no-interaction
-  - pyrus install pear/PHP_CodeSniffer
-  - phpenv rehash
+  # Install PHPCS
+  - composer global require "squizlabs/php_codesniffer *"
 env:
   global:
     - setup=basic
