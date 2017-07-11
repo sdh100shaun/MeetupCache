@@ -8,6 +8,7 @@ install:
   # Install PHPCS
   - composer global require "squizlabs/php_codesniffer *"
 script:
+    - phpcbf --standard=$(if [ -e ruleset.xml ]; then echo ruleset.xml; else echo PSR2; fi) src
     - phpcs --standard=$(if [ -e ruleset.xml ]; then echo ruleset.xml; else echo PSR2; fi) src
 env:
   global:
