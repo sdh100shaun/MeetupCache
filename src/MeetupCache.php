@@ -33,7 +33,7 @@ class MeetupCache
      * ServiceProxy constructor.
      *
      * @param MeetupKeyAuthClient $client
-     * @param Pool $cache
+     * @param Pool                $cache
      */
     public function __construct(MeetupKeyAuthClient $client, Pool $cache)
     {
@@ -43,10 +43,5 @@ class MeetupCache
     
     public function __call($name, $arguments)
     {
-        
     }
-    
-    
-    
-    
 }
