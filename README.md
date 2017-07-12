@@ -1,4 +1,4 @@
-MeetupProxy
+MeetupCache
 =========================
 [![Build Status](https://travis-ci.org/sdh100shaun/MeetupProxy.svg?branch=develop)](https://travis-ci.org/sdh100shaun/MeetupProxy)
 
