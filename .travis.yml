@@ -1,0 +1,14 @@
+language: php
+sudo: required
+dist: trusty
+php: '7.0'
+install:
+  - export PATH="$HOME/.config/composer/vendor/bin:$PATH"
+  - composer install  --no-interaction
+  # Install PHPCS
+  - composer global require "squizlabs/php_codesniffer *"
+script:
+    - phpcs --standard=$(if [ -e ruleset.xml ]; then echo ruleset.xml; else echo PSR2; fi) src
+env:
+  global:
+    - setup=basic
