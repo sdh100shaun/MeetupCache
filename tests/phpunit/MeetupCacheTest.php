@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use ShaunHare\MeetupCache\{
     MeetupCache
 };
+use Stash\Driver\FileSystem;
 use Stash\Pool;
 
 /*
@@ -35,7 +36,9 @@ class MeetupCacheTest extends TestCase
     public function setUp()
     {
         $this->mockedClient = \Mockery::mock('\DMS\Service\Meetup\MeetupKeyAuthClient');
-        $this->meetupCache = new MeetupCache($this->mockedClient,new Pool());
+        $options = array('path' => __DIR__ . '/../testdata/');
+        $driver = new FileSystem($options);
+        $this->meetupCache = new MeetupCache($this->mockedClient,new Pool($driver));
     }
     
     
@@ -47,7 +50,12 @@ class MeetupCacheTest extends TestCase
         unset($var);
     }
     
-    
+    public function testCallCreatesCachedItemOfSameName()
+    {
+        $this->meetupCache->getEvent();
+        var_dump($this->meetupCache->getCachedItem("getEvent"));
+        self::assertNotEmpty($this->meetupCache->getCachedItem("getEvent"));
+    }
     
     
 }

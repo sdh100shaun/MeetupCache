@@ -20,10 +20,7 @@ class MeetupCache
      */
     private $client;
     
-    /**
-     * @var string storagePath
-     */
-    private $cachePath = '';
+    
     /**
      * @var Pool
      */
@@ -41,7 +38,21 @@ class MeetupCache
         $this->cache = $cache;
     }
     
+    /**
+     * @return Pool
+     */
+    public function getCachedItem($name)
+    {
+        return $this->cache->getItem($name)->get();
+    }
+    
     public function __call($name, $arguments)
     {
+        $response = $this->client->$name($arguments);
+        $item = $this->cache->getItem($name);
+        $this->cache->save($item->set($response));
+
+        
+        
     }
 }
