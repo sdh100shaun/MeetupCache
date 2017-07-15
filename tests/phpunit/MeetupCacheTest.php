@@ -1,12 +1,10 @@
 <?php
 namespace Shaunhare\Tests\MeetupCache;
 
+use DMS\Service\Meetup\Response\SingleResultResponse;
 use Mockery;
-use Mockery\Mock;
 use PHPUnit\Framework\TestCase;
-use ShaunHare\MeetupCache\{
-    MeetupCache
-};
+use ShaunHare\MeetupCache\MeetupCache;
 use Stash\Driver\FileSystem;
 use Stash\Pool;
 
@@ -23,9 +21,14 @@ class MeetupCacheTest extends TestCase
     private $mockedClient;
     
     /**
-     * @var
+     * @var MeetupCache
      */
     private $meetupCache;
+    
+    /**
+     * @var FileSystem
+     */
+    private $driver;
     
     /**
      * Just check if the Class has no syntax error
@@ -37,26 +40,51 @@ class MeetupCacheTest extends TestCase
     public function setUp()
     {
         $this->mockedClient = Mockery::mock('\DMS\Service\Meetup\MeetupKeyAuthClient');
-        $options = array('path' => __DIR__ . '/../testdata/');
-        $driver = new FileSystem($options);
-        $this->meetupCache = new MeetupCache($this->mockedClient,new Pool($driver));
+        $options = array('path' => __DIR__ . '/testdata/');
+        $this->driver = new FileSystem($options);
+        $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
     }
     
     
     public function testIsThereAnySyntaxError()
     {
         
-        $var = new MeetupCache($this->mockedClient,new Pool());
+        $var = new MeetupCache($this->mockedClient, new Pool());
         $this->assertTrue(is_object($var));
         unset($var);
     }
     
     public function testCallCreatesCachedItemOfSameName()
     {
-        $this->mockedClient->expects()->getEvent(anything());
+        //ensure cache cleared
+        $this->driver->clear('getEvent');
+    
+        $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
+        
+        $this->mockedClient->shouldReceive('getEvent')
+            ->once()
+            ->andReturn(new SingleResultResponse(200, [], "{}"));
+        
         $this->meetupCache->getEvent();
-        var_dump($this->meetupCache->getCachedItem("getEvent"));
-        self::assertNotEmpty($this->meetupCache->getCachedItem("getEvent"));
+        
+        self::assertNotEmpty($this->meetupCache->getCachedItem("getEvent")->getData());
+    }
+    
+    public function testIsCacheHit()
+    {
+        $this->meetupCache->getEvent();
+        self::assertTrue($this->meetupCache->isHit());
+    }
+    
+    public function testExpireCache()
+    {
+        $this->meetupCache->getEvent();
+        
+        $this->meetupCache->expireCache();
+        
+        $actual = $this->meetupCache->getCachedItem("getEvent");
+    
+        self::assertNull($actual);
     }
     
     public function tearDown()

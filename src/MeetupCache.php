@@ -2,6 +2,7 @@
 
 use DMS\Service\Meetup\MeetupKeyAuthClient;
 
+use DMS\Service\Meetup\Response\SingleResultResponse;
 use Stash\Pool;
 
 /**
@@ -20,11 +21,15 @@ class MeetupCache
      */
     private $client;
     
-    
     /**
      * @var Pool
      */
     private $cache;
+    
+    /**
+     * @var bool
+     */
+    private $fromCache;
     
     /**
      * ServiceProxy constructor.
@@ -46,13 +51,36 @@ class MeetupCache
         return $this->cache->getItem($name)->get();
     }
     
+    /**
+     * @return bool
+     */
+    public function isHit():bool
+    {
+        return $this->fromCache;
+    }
+    /**
+     * @param $name
+     * @param $arguments
+     */
     public function __call($name, $arguments)
     {
-        $response = $this->client->$name($arguments);
         $item = $this->cache->getItem($name);
-        $this->cache->save($item->set($response));
-
+        $meetupResponse = $item->get();
         
-        
+        if ($item->isMiss()) {
+            $this->fromCache = false;
+            $meetupResponse = $this->client->$name($arguments);
+            $this->cache->save($item->set($meetupResponse));
+        }
+        $this->fromCache = true;
+        return $meetupResponse;
+    }
+    
+    /**
+     *
+     */
+    public function expireCache() :bool
+    {
+        return $this->cache->clear();
     }
 }
