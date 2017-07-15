@@ -1,7 +1,7 @@
 <?php namespace ShaunHare\MeetupCache;
 
 use DMS\Service\Meetup\MeetupKeyAuthClient;
-use DMS\Service\Meetup\Response\SingleResultResponse;
+
 use Stash\Pool;
 
 /**
