@@ -1,5 +1,5 @@
 {
-    "name": "Shaunhare/MeetupCache",
+    "name": "shaunhare/meetup-cache",
     "description": " package for intercepting calls from DMS\\Service\\Meetup and reading\/writing response to filesystem written for phpminds",
     "keywords": [
         "meetup",
