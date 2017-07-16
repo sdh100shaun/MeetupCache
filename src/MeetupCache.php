@@ -1,14 +1,12 @@
 <?php namespace ShaunHare\MeetupCache;
 
 use DMS\Service\Meetup\MeetupKeyAuthClient;
-
-use DMS\Service\Meetup\Response\SingleResultResponse;
 use Stash\Pool;
 
 /**
  *  A Meetup Service cache
  *
- *  A meetup service cache of sorts - enables us to get the response from meetup
+ *  A meetup service cache wrapper around DMS Meetup - enables us to get the response from meetup
  *  or from the filesystem if present
  *
  * @author Shaun Hare
