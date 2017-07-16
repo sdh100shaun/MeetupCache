@@ -63,11 +63,12 @@ class MeetupCache
     public function __call($name, $arguments)
     {
         $item = $this->cache->getItem($name);
+        
         $meetupResponse = $item->get();
         
         if ($item->isMiss()) {
             $this->fromCache = false;
-            $meetupResponse = $this->client->$name($arguments);
+            $meetupResponse = $this->client->$name($arguments[0]);
             $this->cache->save($item->set($meetupResponse));
         }
         $this->fromCache = true;
