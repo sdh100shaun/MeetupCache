@@ -15,7 +15,7 @@
     "type": "project",
     "require": {
         "php": ">=7.0",
-        "tedivm/stash": "^0.14.2",
+        "tedivm/stash": "^0.14.2"
 
     },
     "require-dev": {
