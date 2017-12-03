@@ -91,7 +91,7 @@ class MeetupCache
      * @param $args
      * @return string
      */
-    public function generateCachekey($name,$args = [])
+    public function generateCachekey($name, $args = [])
     {
         $name = $name . join("", $args);
         return hash("sha256", $name);
