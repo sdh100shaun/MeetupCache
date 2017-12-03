@@ -15,34 +15,34 @@ use Stash\Pool;
  */
 class MeetupCache
 {
-    
+
     /**
      * @var MeetupKeyAuthClient
      */
     private $client;
-    
+
     /**
      * @var Pool
      */
     private $cache;
-    
+
     /**
      * @var bool
      */
     private $fromCache;
-    
+
     /**
      * ServiceProxy constructor.
      *
      * @param MeetupKeyAuthClient $client
-     * @param Pool                $cache
+     * @param Pool $cache
      */
     public function __construct(MeetupKeyAuthClient $client, Pool $cache)
     {
         $this->client = $client;
         $this->cache = $cache;
     }
-    
+
     /**
      * @return Pool
      */
@@ -50,36 +50,42 @@ class MeetupCache
     {
         return $this->cache->getItem($name)->get();
     }
-    
+
     /**
      * @return bool
      */
-    public function isHit():bool
+    public function isHit(): bool
     {
         return $this->fromCache;
     }
+
     /**
      * @param $name
      * @param $arguments
      */
     public function __call($name, $arguments = [])
     {
-        $item = $this->cache->getItem($this->generateCachekey($name, $arguments));
+        if (!empty($arguments)) {
+            $item = $this->cache->getItem($this->generateCachekey($name, $arguments[0]));
+        } else {
+            $item = $this->cache->getItem($name);
+        }
+
         $meetupResponse = $item->get();
-        
+
         if ($item->isMiss()) {
             $this->fromCache = false;
-            $meetupResponse = $this->client->$name($arguments);
+            $meetupResponse = $this->client->$name($arguments[0]);
             $this->cache->save($item->set($meetupResponse));
         }
         $this->fromCache = true;
         return $meetupResponse;
     }
-    
+
     /**
      * expire the cache
      */
-    public function expireCache() :bool
+    public function expireCache(): bool
     {
         return $this->cache->clear();
     }

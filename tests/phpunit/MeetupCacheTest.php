@@ -58,16 +58,16 @@ class MeetupCacheTest extends TestCase
     {
         //ensure cache cleared
         $this->driver->clear('getEvent');
-    
+
         $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
-        
+
         $this->mockedClient->shouldReceive('getEvent')
             ->once()
             ->andReturn(new SingleResultResponse(200, [], "{}"));
-        
+
         $this->meetupCache->getEvent();
-        
-        self::assertNotEmpty($this->meetupCache->getCachedItem(hash("sha256", "getEvent"))->getData());
+
+        self::assertNotEmpty($this->meetupCache->getCachedItem("getEvent")->getData());
     }
     
     public function testIsCacheHit()
