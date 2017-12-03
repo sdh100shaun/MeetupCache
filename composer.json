@@ -1,4 +1,4 @@
-{
+v{
     "name": "shaunhare/meetup-cache",
     "description": " package for intercepting calls from DMS\\Service\\Meetup and reading\/writing response to filesystem written for phpminds",
     "keywords": [
@@ -13,7 +13,7 @@
         }
     ],
     "type": "project",
-    "require": {
+it    "require": {
         "php": ">=7.0",
         "tedivm/stash": "^0.14.2"
     },

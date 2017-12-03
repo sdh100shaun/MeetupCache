@@ -62,9 +62,9 @@ class MeetupCache
      * @param $name
      * @param $arguments
      */
-    public function __call($name, $arguments)
+    public function __call($name, $arguments = [])
     {
-        $item = $this->cache->getItem($name);
+        $item = $this->cache->getItem($this->generateCachekey($name, $arguments));
         $meetupResponse = $item->get();
         
         if ($item->isMiss()) {
@@ -77,10 +77,23 @@ class MeetupCache
     }
     
     /**
-     *
+     * expire the cache
      */
     public function expireCache() :bool
     {
         return $this->cache->clear();
+    }
+
+    /**
+     * Generate a cache key
+     *
+     * @param $name
+     * @param $args
+     * @return string
+     */
+    public function generateCachekey($name,$args = [])
+    {
+        $name = $name . join("", $args);
+        return hash("sha256", $name);
     }
 }

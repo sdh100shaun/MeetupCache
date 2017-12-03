@@ -67,7 +67,7 @@ class MeetupCacheTest extends TestCase
         
         $this->meetupCache->getEvent();
         
-        self::assertNotEmpty($this->meetupCache->getCachedItem("getEvent")->getData());
+        self::assertNotEmpty($this->meetupCache->getCachedItem(hash("sha256", "getEvent"))->getData());
     }
     
     public function testIsCacheHit()
@@ -85,6 +85,14 @@ class MeetupCacheTest extends TestCase
         $actual = $this->meetupCache->getCachedItem("getEvent");
     
         self::assertNull($actual);
+    }
+
+    public function testGenerateCacheKey()
+    {
+        $expected = hash("sha256","testtesttest");
+
+        $this->assertEquals($expected, $this->meetupCache->generateCachekey("test",["test", "test"]));
+
     }
     
     public function tearDown()
