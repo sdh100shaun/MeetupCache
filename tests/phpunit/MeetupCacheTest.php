@@ -37,9 +37,9 @@ class MeetupCacheTest extends TestCase
      * any typo before you even use this package in a real project.
      *
      */
-    public function setUp()
+    public function setUp():void 
     {
-        $this->mockedClient = Mockery::mock('\DMS\Service\Meetup\MeetupKeyAuthClient');
+        $this->mockedClient = Mockery::mock('\DMS\Service\Meetup\MeetupOAuthClient');
         $options = array('path' => __DIR__ . '/testdata/');
         $this->driver = new FileSystem($options);
         $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
@@ -62,12 +62,14 @@ class MeetupCacheTest extends TestCase
         $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
 
         $this->mockedClient->shouldReceive('getEvent')
+            ->with([])
             ->once()
-            ->andReturn(new SingleResultResponse(200, [], "{}"));
+            ->andReturn(new SingleResultResponse(200, [], "{\"test\":\"value\"}"));
 
         $this->meetupCache->getEvent();
 
-        self::assertNotEmpty($this->meetupCache->getCachedItem("getEvent")->getData());
+        $key = $this->meetupCache->generateCachekey('getEvent', []);
+        self::assertNotEmpty($this->meetupCache->getCachedItem($key)->getData());
     }
     
     public function testIsCacheHit()
@@ -95,7 +97,7 @@ class MeetupCacheTest extends TestCase
 
     }
     
-    public function tearDown()
+    public function tearDown():void
     {
         Mockery::close();
     }

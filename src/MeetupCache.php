@@ -1,6 +1,6 @@
 <?php namespace ShaunHare\MeetupCache;
 
-use DMS\Service\Meetup\MeetupKeyAuthClient;
+use DMS\Service\Meetup\MeetupOAuthClient;
 
 use DMS\Service\Meetup\Response\SingleResultResponse;
 use Stash\Pool;
@@ -17,7 +17,7 @@ class MeetupCache
 {
 
     /**
-     * @var MeetupKeyAuthClient
+     * @var MeetupOAuthClient
      */
     private $client;
 
@@ -34,10 +34,11 @@ class MeetupCache
     /**
      * ServiceProxy constructor.
      *
-     * @param MeetupKeyAuthClient $client
-     * @param Pool $cache
+
+     * @param MeetupOAuthClient $client
+     * @param Pool                $cache
      */
-    public function __construct(MeetupKeyAuthClient $client, Pool $cache)
+    public function __construct(MeetupOAuthClient $client, Pool $cache)
     {
         $this->client = $client;
         $this->cache = $cache;
@@ -62,23 +63,18 @@ class MeetupCache
     /**
      * @param $name
      * @param $arguments
+     * @return SingleResultResponse
      */
     public function __call($name, $arguments = [])
     {
-        if (!empty($arguments)) {
-            $item = $this->cache->getItem($this->generateCachekey($name, $arguments[0]));
-        } else {
-            $item = $this->cache->getItem($name);
-        }
-
+        $item = $this->cache->getItem($this->generateCachekey($name, $arguments));
         $meetupResponse = $item->get();
-
+        $this->fromCache = true;
         if ($item->isMiss()) {
             $this->fromCache = false;
-            $meetupResponse = $this->client->$name($arguments[0]);
+            $meetupResponse = $this->client->$name($arguments);
             $this->cache->save($item->set($meetupResponse));
         }
-        $this->fromCache = true;
         return $meetupResponse;
     }
 
