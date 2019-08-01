@@ -15,25 +15,26 @@ use Stash\Pool;
  */
 class MeetupCache
 {
-    
+
     /**
      * @var MeetupOAuthClient
      */
     private $client;
-    
+
     /**
      * @var Pool
      */
     private $cache;
-    
+
     /**
      * @var bool
      */
     private $fromCache;
-    
+
     /**
      * ServiceProxy constructor.
      *
+
      * @param MeetupOAuthClient $client
      * @param Pool                $cache
      */
@@ -42,7 +43,7 @@ class MeetupCache
         $this->client = $client;
         $this->cache = $cache;
     }
-    
+
     /**
      * @return Pool
      */
@@ -50,11 +51,11 @@ class MeetupCache
     {
         return $this->cache->getItem($name)->get();
     }
-    
+
     /**
      * @return bool
      */
-    public function isHit():bool
+    public function isHit(): bool
     {
         return $this->fromCache;
     }
@@ -64,25 +65,42 @@ class MeetupCache
      * @param $arguments
      * @return SingleResultResponse
      */
-    public function __call($name, $arguments)
+    public function __call($name, $arguments = [])
     {
-        $item = $this->cache->getItem($name);
-        $meetupResponse = $item->get();
+        if (!empty($arguments)) {
+            $item = $this->cache->getItem($this->generateCachekey($name, $arguments[0]));
+        } else {
+            $item = $this->cache->getItem($name);
+        }
 
+        $meetupResponse = $item->get();
         $this->fromCache = true;
         if ($item->isMiss()) {
             $this->fromCache = false;
-            $meetupResponse = $this->client->$name($arguments);
+            $meetupResponse = $this->client->$name($arguments[0]);
             $this->cache->save($item->set($meetupResponse));
         }
         return $meetupResponse;
     }
-    
+
     /**
-     *
+     * expire the cache
      */
-    public function expireCache() :bool
+    public function expireCache(): bool
     {
         return $this->cache->clear();
+    }
+
+    /**
+     * Generate a cache key
+     *
+     * @param $name
+     * @param $args
+     * @return string
+     */
+    public function generateCachekey($name, $args = [])
+    {
+        $name = $name . join("", $args);
+        return hash("sha256", $name);
     }
 }

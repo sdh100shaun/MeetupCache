@@ -58,15 +58,15 @@ class MeetupCacheTest extends TestCase
     {
         //ensure cache cleared
         $this->driver->clear('getEvent');
-    
+
         $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
-        
+
         $this->mockedClient->shouldReceive('getEvent')
             ->once()
             ->andReturn(new SingleResultResponse(200, [], "{}"));
-        
+
         $this->meetupCache->getEvent();
-        
+
         self::assertNotEmpty($this->meetupCache->getCachedItem("getEvent")->getData());
     }
     
@@ -85,6 +85,14 @@ class MeetupCacheTest extends TestCase
         $actual = $this->meetupCache->getCachedItem("getEvent");
     
         self::assertNull($actual);
+    }
+
+    public function testGenerateCacheKey()
+    {
+        $expected = hash("sha256","testtesttest");
+
+        $this->assertEquals($expected, $this->meetupCache->generateCachekey("test",["test", "test"]));
+
     }
     
     public function tearDown():void
