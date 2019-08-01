@@ -68,7 +68,7 @@ class MeetupCacheTest extends TestCase
 
         $this->meetupCache->getEvent();
 
-        $key= $this->meetupCache->generateCachekey('getEvent', []);
+        $key = $this->meetupCache->generateCachekey('getEvent', []);
         self::assertNotEmpty($this->meetupCache->getCachedItem($key)->getData());
     }
     
