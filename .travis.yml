@@ -1,7 +1,7 @@
 language: php
 sudo: required
 dist: trusty
-php: '7.0'
+php: '7.2'
 install:
   - export PATH="$HOME/.config/composer/vendor/bin:$PATH"
   - composer install  --no-interaction
@@ -9,6 +9,7 @@ install:
   - composer global require "squizlabs/php_codesniffer *"
 script:
     - phpcs --standard=$(if [ -e ruleset.xml ]; then echo ruleset.xml; else echo PSR2; fi) src
+    - phpunit --configuration phpunit.xml
 env:
   global:
     - setup=basic
