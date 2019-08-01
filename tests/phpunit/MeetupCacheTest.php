@@ -37,7 +37,7 @@ class MeetupCacheTest extends TestCase
      * any typo before you even use this package in a real project.
      *
      */
-    public function setUp():void 
+    public function setUp(): void 
     {
         $this->mockedClient = Mockery::mock('\DMS\Service\Meetup\MeetupKeyAuthClient');
         $options = array('path' => __DIR__ . '/testdata/');
@@ -87,7 +87,7 @@ class MeetupCacheTest extends TestCase
         self::assertNull($actual);
     }
     
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }
