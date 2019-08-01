@@ -62,12 +62,14 @@ class MeetupCacheTest extends TestCase
         $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
 
         $this->mockedClient->shouldReceive('getEvent')
+            ->with([])
             ->once()
-            ->andReturn(new SingleResultResponse(200, [], "{}"));
+            ->andReturn(new SingleResultResponse(200, [], "{\"test\":\"value\"}"));
 
         $this->meetupCache->getEvent();
 
-        self::assertNotEmpty($this->meetupCache->getCachedItem("getEvent")->getData());
+        $key= $this->meetupCache->generateCachekey('getEvent', []);
+        self::assertNotEmpty($this->meetupCache->getCachedItem($key)->getData());
     }
     
     public function testIsCacheHit()
