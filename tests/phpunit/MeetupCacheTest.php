@@ -37,9 +37,9 @@ class MeetupCacheTest extends TestCase
      * any typo before you even use this package in a real project.
      *
      */
-    public function setUp(): void 
+    public function setUp():void 
     {
-        $this->mockedClient = Mockery::mock('\DMS\Service\Meetup\MeetupKeyAuthClient');
+        $this->mockedClient = Mockery::mock('\DMS\Service\Meetup\MeetupOAuthClient');
         $options = array('path' => __DIR__ . '/testdata/');
         $this->driver = new FileSystem($options);
         $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
@@ -87,7 +87,7 @@ class MeetupCacheTest extends TestCase
         self::assertNull($actual);
     }
     
-    public function tearDown(): void
+    public function tearDown():void
     {
         Mockery::close();
     }
