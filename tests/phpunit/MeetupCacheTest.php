@@ -1,6 +1,7 @@
 <?php
 namespace Shaunhare\Tests\MeetupCache;
 
+use DMS\Service\Meetup\MeetupOAuthClient;
 use DMS\Service\Meetup\Response\SingleResultResponse;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -8,15 +9,13 @@ use ShaunHare\MeetupCache\MeetupCache;
 use Stash\Driver\FileSystem;
 use Stash\Pool;
 
-/*
-*  @author Shaun Hare
-*/
-
+/**
+ * @author Shaun Hare
+ */
 class MeetupCacheTest extends TestCase
 {
-    
     /**
-     * @var
+     * @var MeetupOAuthClient|Mockery\MockInterface
      */
     private $mockedClient;
     
@@ -39,16 +38,14 @@ class MeetupCacheTest extends TestCase
      */
     public function setUp():void 
     {
-        $this->mockedClient = Mockery::mock('\DMS\Service\Meetup\MeetupOAuthClient');
+        $this->mockedClient = Mockery::mock(MeetupOAuthClient::class);
         $options = array('path' => __DIR__ . '/testdata/');
         $this->driver = new FileSystem($options);
         $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
     }
-    
-    
+
     public function testIsThereAnySyntaxError()
     {
-        
         $var = new MeetupCache($this->mockedClient, new Pool());
         $this->assertTrue(is_object($var));
         unset($var);
@@ -59,13 +56,11 @@ class MeetupCacheTest extends TestCase
         //ensure cache cleared
         $this->driver->clear('getEvent');
 
-        $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
-
         $this->mockedClient->shouldReceive('getEvent')
-            ->with([])
             ->once()
             ->andReturn(new SingleResultResponse(200, [], "{\"test\":\"value\"}"));
 
+        $this->meetupCache = new MeetupCache($this->mockedClient, new Pool($this->driver));
         $this->meetupCache->getEvent();
 
         $key = $this->meetupCache->generateCachekey('getEvent', []);
@@ -81,11 +76,11 @@ class MeetupCacheTest extends TestCase
     public function testExpireCache()
     {
         $this->meetupCache->getEvent();
-        
+
         $this->meetupCache->expireCache();
-        
+
         $actual = $this->meetupCache->getCachedItem("getEvent");
-    
+
         self::assertNull($actual);
     }
 
