@@ -2,6 +2,7 @@
 
 use DMS\Service\Meetup\MeetupOAuthClient;
 
+use DMS\Service\Meetup\Response\MultiResultResponse;
 use DMS\Service\Meetup\Response\SingleResultResponse;
 use Stash\Pool;
 
@@ -10,6 +11,9 @@ use Stash\Pool;
  *
  *  A meetup service cache of sorts - enables us to get the response from meetup
  *  or from the filesystem if present
+ *
+ * @method SingleResultResponse getEvent(array $args = array())
+ * @method MultiResultResponse  getEvents(array $args = array())
  *
  * @author Shaun Hare
  */
@@ -63,7 +67,7 @@ class MeetupCache
     /**
      * @param $name
      * @param $arguments
-     * @return SingleResultResponse
+     * @return SingleResultResponse|MultiResultResponse
      */
     public function __call($name, $arguments = [])
     {
@@ -72,7 +76,7 @@ class MeetupCache
         $this->fromCache = true;
         if ($item->isMiss()) {
             $this->fromCache = false;
-            $meetupResponse = $this->client->$name($arguments);
+            $meetupResponse = $this->client->$name(...$arguments);
             $this->cache->save($item->set($meetupResponse));
         }
         return $meetupResponse;
